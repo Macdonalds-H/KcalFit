@@ -34,10 +34,15 @@ SELECT * FROM users;
 ![image](https://github.com/user-attachments/assets/afe3bf64-cade-48ca-8f26-02ee0262e94f)
 이렇게 나온다면 성공
 
-4. Flask 서버 실행
+4. Flask 설치
+```
+pip install Flask
+```
+
+5. Flask 서버 실행
 ```
 python app.py
 ```
 
-5. http://127.0.0.1:5000 접속<br>
+6. http://127.0.0.1:5000 접속<br>
 ![image](https://github.com/user-attachments/assets/a6641c3a-1475-45ba-877b-d65b551923a8)

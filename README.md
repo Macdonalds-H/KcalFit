@@ -14,9 +14,13 @@ mysql -u root -p
 3. 데이터베이스 생성
 ```
 CREATE DATABASE my_flask_app;
+
 SHOW DATABASES;
+
 CREATE USER 'user'@'localhost' IDENTIFIED BY '1111';
+
 GRANT ALL PRIVILEGES ON my_flask_app.* TO 'user'@'localhost';
+
 FLUSH PRIVILEGES;
 
 USE my_flask_app;
@@ -28,6 +32,7 @@ CREATE TABLE users (
 );
 
 INSERT INTO users (userid, userpw) VALUES ('user1', 'pw1');
+
 SELECT * FROM users;
 
 ```
@@ -37,9 +42,11 @@ SELECT * FROM users;
 4. Flask 설치
 ```
 pip install Flask
+
+pip install mysql-connector-python
 ```
 
-5. Flask 서버 실행
+5. Flask 서버 실행 (kcalfit 폴더 안에서)
 ```
 python app.py
 ```

@@ -2,10 +2,40 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>My Web App</title>
+    <title>KcalFit</title>
+    <link rel="stylesheet" href="static/css/main.css">
+    <style>
+      #container{
+        margin-top: 100px;
+      }
+      #menu-btn{
+        display: flex;
+        justify-content: space-around;
+      }
+      #menu-btn li{
+        display: inline-block;
+        border-radius: 5px;
+        border: 1px solid black;
+        padding: 10px;
+        text-align: center;
+        width: 150px;
+      }
+      #menu-btn li:hover{
+        background-color: rgb(190, 249, 126);
+      }
+    </style>
 </head>
 <body>
-    <h1>환영합니다!</h1>
+    <div id="container">
+      <h1>칼로리핏</h1>
+      <ul id="menu-btn">
+        <a href="/diet"><li>식단</li></a>
+        <a href="/moisture"><li>수분</li></a>
+        <a href="/exercise"><li>운동</li></a>
+        <a href="/alarm"><li>알림</li></a>
+    </ul>
+    </div>
+    <!-- <h1>환영합니다!</h1>
     <button onclick="fetchData()">데이터 불러오기</button>
     <div id="data"></div>
   
@@ -32,6 +62,6 @@
           });
       }
     </script>
-  
+   -->
 </body>
 </html>

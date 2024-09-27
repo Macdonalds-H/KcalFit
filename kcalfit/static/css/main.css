@@ -1,0 +1,40 @@
+*,body{
+    margin: 0;
+    padding: 0;
+}
+a{
+    text-decoration: none;
+    color: black;
+}
+#header{
+    margin: 0 auto;
+    padding-top: 20px;
+    width: 80%;
+    height: 100px;
+}
+#header #logo{
+    float: left;
+    width: 100px;
+}
+#header ul{
+    float: right;
+}
+#header li{
+    display: inline-block;
+    padding: 10px 30px;
+}
+#header li:hover{
+    border-bottom: 1px solid black;
+}
+.onlink{
+    border-bottom: 1px solid black;
+}
+#container{
+    margin: 0 auto;
+    width: 80%;
+}
+#container h1{
+    padding: 100px 0px;
+    text-align: center;
+    font-size: 60px;
+}

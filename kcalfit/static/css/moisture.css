@@ -1,0 +1,55 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  width: 800px;
+}
+
+.water-tracker, .calendar {
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 8px;
+  width: 48%;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* 수분 섭취량 영역 */
+#water-progress {
+  width: 100%;
+  background-color: #e0e0e0;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+#water-bar {
+  height: 30px;
+  width: 0%;
+  background-color: #00bfff;
+  text-align: center;
+  color: white;
+  line-height: 30px;
+}
+
+.input-box {
+  margin-bottom: 10px;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049;
+}

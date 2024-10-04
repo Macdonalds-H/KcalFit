@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>운동 기록 설정 화면</title>
+    <link rel="stylesheet" href="static/css/dayExer.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>운동 기록 설정 화면</h1>
+        </div>
+        <div class="main-content">
+            <div class="calendar">
+                <h2>10월</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>일</th>
+                            <th>월</th>
+                            <th>화</th>
+                            <th>수</th>
+                            <th>목</th>
+                            <th>금</th>
+                            <th>토</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td></td><td></td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td>
+                        </tr>
+                        <tr>
+                            <td>6</td><td>7</td><td>8</td><td>9</td><td>10</td><td>11</td><td>12</td>
+                        </tr>
+                        <tr>
+                            <td>13</td><td>14</td><td>15</td><td>16</td><td>17</td><td>18</td><td>19</td>
+                        </tr>
+                        <tr>
+                            <td>20</td><td>21</td><td>22</td><td>23</td><td>24</td><td>25</td><td>26</td>
+                        </tr>
+                        <tr>
+                            <td>27</td><td>28</td><td>29</td><td>30</td><td>31</td><td></td><td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="settings">
+                <label for="date">날짜</label>
+                <input type="date" id="date" name="date">
+                <br>
+
+                <label for="intensity">일일 운동강도</label>
+                <select id="intensity">
+                    <option value="low">저강도</option>
+                    <option value="medium">중강도</option>
+                    <option value="high">고강도</option>
+                </select>
+                <p id="intensityDescription" class="description"></p>
+                
+                <br>
+                <label for="time">일일 운동시간</label>
+                <input type="number" id="hours" min="0" max="23" value="0"> 시간 : 
+                <input type="number" id="minutes" min="0" max="59" value="0"> 분
+
+                <button id="saveButton" class="save-btn">저장하기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        document.getElementById('saveButton').addEventListener('click', function() {
+            const intensity = document.getElementById('intensity').value;
+            const hours = document.getElementById('hours').value;
+            const minutes = document.getElementById('minutes').value;
+
+            alert(`운동 강도: ${intensity}\n운동 시간: ${hours}시간 ${minutes}분 저장 완료!`);
+        });
+
+        document.getElementById('intensity').addEventListener('change', function() {
+            const intensity = this.value;
+            const descriptionElement = document.getElementById('intensityDescription');
+            
+            let description = '';
+            
+            if (intensity === 'low') {
+                description = '땀이 많이 나지 않는 정도의 가벼운 운동, ex: 걷기, 요가';
+            } else if (intensity === 'medium') {
+                description = '호흡이 짧아지고 10분 정도 운동 후 땀이 나는 정도, ex: 자전거 타기';
+            } else if (intensity === 'high') {
+                description = '호흡이 깊고 빨라지며 짧은 시간 운동 후 땀이 날 정도, 대화하기 힘든 정도, ex: 스쿼트, 무산소 플랭크';
+            }
+            
+            descriptionElement.textContent = description;
+        });
+    </script>
+    
+</body>
+</html>

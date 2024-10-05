@@ -4,15 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="static/css/main.css">
 </head>
 <body>
     <div id="container">
         <h1>칼로리핏</h1>
         <div id="login-wrapper">
-            <input type="text" placeholder="ID">
-            <input type="text" placeholder="PW">
-            <button>Login</button>
+            <form action="/login" method="POST">
+                <input type="text" placeholder="ID" name="username" required>
+                <input type="text" placeholder="PW" name="password" required>
+                <button type="submit">Login</button>
+            </form>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul>
+                {% for message in messages %}
+                <li>{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+            {% endwith %}
         </div>
     </div>
 </body>

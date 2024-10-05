@@ -1,28 +1,231 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
-    <link rel="stylesheet" href="static/css/main.css">
+    <title>알림 설정</title>
     <style>
-        
+        body {
+            font-family: 'Noto Sans KR', sans-serif; 
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 15px;
+            /* background-color: #fff; */
+            border-radius: 8px;
+            /* box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); */
+        }
+
+        h1, h2 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 24px;
+        }
+
+        h2 {
+            font-size: 18px;
+            color: #555;
+        }
+
+        label {
+            font-size: 16px;
+            margin-bottom: 5px;
+            display: block;
+            color: #444;
+        }
+
+        input[type="number"], input[type="time"] {
+            font-size: 16px;
+            padding: 8px;
+            margin: 5px 0;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        input[type="number"] {
+            max-width: 80px;
+        }
+
+        .time-inputs {
+            margin-top: 10px;
+        }
+
+        .inputs-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .inputs-container span {
+            margin-left: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #28a745;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .time-input-wrapper {
+            margin-bottom: 10px;
+        }
+
+        .alert {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #d9534f;
+        }
+
     </style>
 </head>
 <body>
-    <div id="header">
-        <h1 id="logo">KcalFit</h1>
-        <ul id="menu">
-            <a href="/"><li>홈</li></a>
-            <a href="/diet"><li>식단</li></a>
-            <a href="/moisture"><li>수분</li></a>
-            <a href="/exercise"><li>운동</li></a>
-            <a href="/alarm"><li class="onlink">알림</li></a>
-            <a href="/mypage"><li>마이페이지</li></a>
-        </ul>
-    </div>
-    <div id="container">
 
+    <div class="container">
+        <h1>알림 설정</h1>
+
+        <!-- 식단 입력 알림 -->
+        <div class="section">
+            <h2>식단 입력 알림</h2>
+            <label for="meal-frequency">하루에 몇 번 알려드릴까요?</label>
+            <div class="inputs-container">
+                <input type="number" id="meal-frequency" name="meal-frequency" min="0" max="10" value="0" oninput="updateTimeInputs('meal')">
+                <span>회</span>
+            </div>
+            <div id="meal-time-inputs" class="time-inputs"></div>
+        </div>
+
+        <!-- 물 섭취 알림 -->
+        <div class="section">
+            <h2>물 섭취 알림</h2>
+            <label for="water-frequency">하루에 몇 번 알려드릴까요?</label>
+            <div class="inputs-container">
+                <input type="number" id="water-frequency" name="water-frequency" min="0" max="20" value="0" oninput="updateTimeInputs('water')">
+                <span>회</span>
+            </div>
+            <div id="water-time-inputs" class="time-inputs"></div>
+        </div>
+
+        <button id="start-button" onclick="startNotifications()">알림 시작</button>
+        <div id="alert-message" class="alert" style="display:none;">이미 알림이 설정되었습니다.</div>
     </div>
+
+    <script>
+        let mealTimes = [];
+        let waterTimes = [];
+        let notificationsScheduled = false; // 알림이 시작되었는지 여부
+
+        function updateTimeInputs(type) {
+            const frequency = document.getElementById(`${type}-frequency`).value;
+            const timeInputsContainer = document.getElementById(`${type}-time-inputs`);
+
+            // 기존 입력 필드 삭제
+            timeInputsContainer.innerHTML = '';
+
+            // 새로운 입력 필드를 수량만큼 추가
+            for (let i = 1; i <= frequency; i++) {
+                const wrapper = document.createElement('div');
+                wrapper.classList.add('time-input-wrapper');
+
+                const label = document.createElement('label');
+                label.textContent = `${i}번째 알림 시간: `;
+                const input = document.createElement('input');
+                input.type = 'time';
+                input.name = `${type}-time-${i}`;
+                input.id = `${type}-time-${i}`;
+                wrapper.appendChild(label);
+                wrapper.appendChild(input);
+                timeInputsContainer.appendChild(wrapper);
+            }
+        }
+
+        function startNotifications() {
+            if (notificationsScheduled) {
+                document.getElementById('alert-message').style.display = 'block';
+                return; // 이미 알림이 설정된 경우 중복 방지
+            }
+
+            mealTimes = getTimeValues('meal');
+            waterTimes = getTimeValues('water');
+
+            // 식단 및 물 섭취 알림 예약
+            scheduleNotifications(mealTimes, '식단을 입력해주세요.');
+            scheduleNotifications(waterTimes, '물을 마실 시간이에요.');
+
+            notificationsScheduled = true; // 알림 설정 상태를 true로 변경
+        }
+
+        function getTimeValues(type) {
+            const frequency = document.getElementById(`${type}-frequency`).value;
+            const times = [];
+
+            for (let i = 1; i <= frequency; i++) {
+                const timeValue = document.getElementById(`${type}-time-${i}`).value;
+                if (timeValue) {
+                    times.push(timeValue);
+                }
+            }
+
+            return times;
+        }
+
+        function scheduleNotifications(times, message) {
+            times.forEach(time => {
+                const [hours, minutes] = time.split(':');
+                const now = new Date();
+                const notificationTime = new Date();
+
+                // 알림 시간을 설정
+                notificationTime.setHours(hours);
+                notificationTime.setMinutes(minutes);
+                notificationTime.setSeconds(0);
+
+                // 알림 시간이 현재 시간보다 앞서면 다음 날로 설정
+                if (notificationTime < now) {
+                    notificationTime.setDate(notificationTime.getDate() + 1);
+                }
+
+                const timeDifference = notificationTime - now;
+
+                // 지정된 시간에 알림을 띄우는 setTimeout 설정
+                setTimeout(() => {
+                    alert(message);
+                }, timeDifference);
+            });
+        }
+    </script>
+
 </body>
 </html>

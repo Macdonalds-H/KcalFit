@@ -56,6 +56,7 @@ body {
 }
 
 label {
+  font-weight: bold;
   font-size: 20px;
   color: #333;
   display: block;
@@ -71,14 +72,7 @@ select {
   border-radius: 5px;
   margin-bottom: 15px;
 }
-input[type="date"] {
-  width: 100%;
-  padding: 10px;
-  font-size: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  margin-bottom: 15px;
-}
+
 input {
   width: 25%;
   padding: 10px;
@@ -89,9 +83,10 @@ input {
 }
 
 .save-btn {
+  margin-top: 20px;
   display: block;
   width: 100%;
-  padding: 10px;
+  padding: 10px 20px;
   background-color: #ccc;
   color: white;
   font-size: 16px;
@@ -122,3 +117,28 @@ input {
   font-size: 14px;
 }
 
+
+/* 기본 workout-entry 스타일 */
+.workout-entry {
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+/* 저강도 - 파란색 */
+.low-intensity {
+  color: blue; /* 파란색 */
+}
+
+/* 중강도 - 주황색 */
+.medium-intensity {
+  color: orange; /* 주황색으로 수정 */
+}
+
+/* 고강도 - 빨간색 */
+.high-intensity {
+  color: red; /* 빨간색 */
+}
+
+.selected-date {
+  background-color: #d1ffd1;
+}

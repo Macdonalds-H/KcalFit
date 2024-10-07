@@ -303,3 +303,32 @@ def setup_routes(app):
                 return redirect('/login')
 
         return render_template('login.html')
+    
+
+
+
+    # dayExer 추가사항
+    # 추가되는 코드 (print 포함)
+
+# Exercise 페이지에서 사용자 운동 기록을 DB에서 가져오기
+    # @app.route('/save.exercise', methods = ['POST'])
+    # def save_exercise():
+    # # 세션에서 사용자 ID 확인
+    #     user_id = session.get['user_id']
+    
+    # # DB에서 운동 기록 가져오기
+    # conn = get_db_connection()
+    # cursor = conn.cursor(dictionary=True)
+    # cursor.execute("SELECT * FROM Workouts WHERE user_id = %s", (user_id,))
+    # workouts = cursor.fetchall()
+    
+    # # 터미널에서 운동 기록 확인
+    # print(f"사용자 ID: {user_id}의 운동 기록:", workouts)
+    
+    # return render_template('exercise.html', workouts=workouts)
+
+
+
+
+
+

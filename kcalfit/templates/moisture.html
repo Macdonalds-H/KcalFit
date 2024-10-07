@@ -1,109 +1,86 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/KcalFit/static/css/moisture.css">
     <title>수분 섭취량 기록</title>
-  
-    
+    <link rel="stylesheet" href="static/css/main.css">
+    <link rel="stylesheet" href="/static/css/moisture.css">
 </head>
 <body>
-    <div class="container">
-        <!-- 왼쪽: 수분 섭취량 기록 -->
-        <div class="water-tracker">
-            <h2>일일 수분 섭취량</h2>
-            <div id="water-progress">
-                <div id="water-bar">0%</div>
+    <div id="header">
+        <h1 id="logo">KcalFit</h1>
+        <ul id="menu">
+            <a href="/"><li>홈</li></a>
+            <a href="/diet"><li>식단</li></a>
+            <a href="/moisture"><li class="onlink">수분</li></a>
+            <a href="/exercise"><li>운동</li></a>
+            <a href="/alarm"><li>알림</li></a>
+            <a href="/mypage"><li>마이페이지</li></a>
+        </ul>
+    </div>
+    <div id="container">
+        <h1>수분 섭취량 기록</h1>
+
+
+        <!-- 수분 섭취 진행 바 -->
+        <div class="intake-progress-container">
+            <div class="intake-progress">
+                <div class = "progress-header">
+                    <span>일일 수분 섭취량</span>
+                    <span class="goal">목표: {{ target_intake }}ml </span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress">{{ current_intake }} ml</div>
+                </div>
             </div>
-            <p>목표: 2000ml</p>
-            <div class="input-box">
-                <label for="water-input">섭취량 입력 (ml): </label>
-                <input type="number" id="water-input" placeholder="예: 100ml">
-            </div>
-            <button onclick="updateProgress()">저장</button>
         </div>
 
-        <!-- 오른쪽: 캘린더 -->
-        <div class="calendar">
-            <h2>9월</h2>
-            <table>
+        <!-- 섭취량 입력 폼 -->
+        <div class="intake-input-container">
+            <form action="/save_moisture" method="post">
+                <label for="intake"> 섭취량 입력 (ml): </label>
+                <input type="hidden" name="go_intake" value="30">
+                <input type="number" id="intake" name="target_intake" min="0"  required>
+                <button type="submit">저장</button>
+            </form>
+        </div>
+
+        <!-- 달력 -->
+        <div class="calendar-container">
+            <h2>{{ today.year }}년 {{ today.month }}월 달력</h2>
+            <table border="1">
                 <thead>
                     <tr>
+                        <th>일</th>
                         <th>월</th>
                         <th>화</th>
                         <th>수</th>
                         <th>목</th>
                         <th>금</th>
                         <th>토</th>
-                        <th>일</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>2</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>4</td>
-                        <td>5</td>
-                        <td>6</td>
-                        <td>7</td>
-                        <td>8</td>
-                        <td>9</td>
-                    </tr>
-                    <tr>
-                        <td>10</td>
-                        <td>11</td>
-                        <td>12</td>
-                        <td>13</td>
-                        <td>14</td>
-                        <td>15</td>
-                        <td>16</td>
-                    </tr>
-                    <tr>
-                        <td>17</td>
-                        <td>18</td>
-                        <td>19</td>
-                        <td>20</td>
-                        <td>21</td>
-                        <td>22</td>
-                        <td>23</td>
-                    </tr>
-                    <tr>
-                        <td>24</td>
-                        <td>25</td>
-                        <td>26</td>
-                        <td>27</td>
-                        <td>28</td>
-                        <td>29</td>
-                        <td>30</td>
-                    </tr>
+                    {% for week in month_days %}
+                        <tr>
+                            {% for day in week %}
+                                {% if day == 0 %}
+                                    <td></td> <!-- 빈 칸 -->
+                                {% else %}
+                                    {% set date_str = today.replace(day=day).strftime('%Y-%m-%d') %}
+                                    {% set intake = hydration_data.get(date_str, 0) %}
+                                    <td>
+                                        <strong>{{ day }}</strong><br>
+                                        섭취량: {{ intake }}ml
+                                    </td>
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
-
-    <script>
-        let totalWater = 0;
-        const goal = 2000; // 목표 수분 섭취량
-
-        function updateProgress() {
-            const input = document.getElementById('water-input').value;
-            const waterBar = document.getElementById('water-bar');
-
-            if (input) {
-                totalWater += parseInt(input);
-                const percentage = Math.min((totalWater / goal) * 100, 100); // 100%를 넘지 않도록 제한
-
-                waterBar.style.width = percentage + '%';
-                waterBar.textContent = Math.floor(percentage) + '%';
-
-                // 입력 필드 초기화
-                document.getElementById('water-input').value = '';
-            }
-        }
-    </script>
 </body>
 </html>

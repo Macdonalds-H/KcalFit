@@ -244,6 +244,35 @@ def setup_routes(app):
         flash('섭취량이 저장되었습니다.', 'success')
         return redirect('/moisture')
 
+    @app.route('/get_moisture_goal')
+    def get_moisture_goal():
+        user_id = session.get('user_id')
+        
+        # DB에서 사용자 인바디 정보 가져오기
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM body_info WHERE user_id = %s", (user_id,))
+        body_info = cursor.fetchone()
+        
+        if not body_info:
+            return jsonify({"error": "Body information not found"}), 404
+        
+        # ChatGPT API 요청 준비 (한국어 요청 + 한국 음식 포함)
+        prompt = f"제 키는 {body_info['height']}cm, 몸무게는 {body_info['weight']}kg, 체지방률은 {body_info['body_fat_percentage']}%, 골격근량은 {body_info['skeletal_muscle_mass']}kg, 기초대사량은 {body_info['basal_metabolic_rate']}kcal입니다. 일일 수분 섭취량을 나에게 맞춤으로 추천해줘."
+
+        # ChatGPT API 요청
+        openai.api_key = ""
+        response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",  # 사용할 모델을 명시합니다.
+        messages=[
+            {"role": "user", "content": prompt}
+        ]
+        )
+
+        moisture_goal = response['choices'][0]['message']['content']  # 응답에서 내용 추출
+    
+        return jsonify({"moisture_goal": moisture_goal})
+
 
     @app.route('/exercise')
     def exercise():

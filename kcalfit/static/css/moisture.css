@@ -1,55 +1,81 @@
 body {
   font-family: Arial, sans-serif;
-  margin: 20px;
-  display: flex;
-  justify-content: center;
 }
 
-.container {
+.intake-progress-container,
+.intake-input-container {
+  margin: 20px 0;
+  padding: 20px;
+  background-color: #003f66;
+  border-radius: 15px;
+  color: white;
+  max-width: 400px;
+}
+
+.intake-progress {
+  text-align: center;
+}
+
+.progress-header {
   display: flex;
   justify-content: space-between;
-  width: 800px;
-}
-
-.water-tracker, .calendar {
-  border: 1px solid #ddd;
-  padding: 20px;
-  border-radius: 8px;
-  width: 48%;
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-/* 수분 섭취량 영역 */
-#water-progress {
-  width: 100%;
-  background-color: #e0e0e0;
-  border-radius: 5px;
-  overflow: hidden;
-  margin-bottom: 20px;
-}
-
-#water-bar {
-  height: 30px;
-  width: 0%;
-  background-color: #00bfff;
-  text-align: center;
-  color: white;
-  line-height: 30px;
-}
-
-.input-box {
   margin-bottom: 10px;
 }
 
-button {
+.progress-bar {
+  background-color: #e0e0e0;
+  border-radius: 5px;
+  height: 25px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.progress {
+  height: 100%;
+  background-color: #4caf50;
+  text-align: center;
+  color: white;
+  line-height: 25px;
+  transition: width 0.5s ease;
+}
+
+.intake-input-container {
+  text-align: center;
+}
+
+.intake-input-container input {
+  padding: 10px;
+  margin-right: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  width: 150px;
+}
+
+.intake-input-container button {
   padding: 10px 20px;
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
 }
 
-button:hover {
+.intake-input-container button:hover {
   background-color: #45a049;
+}
+
+.calendar-container {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.calendar-container table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.calendar-container th, .calendar-container td {
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #ccc;
 }

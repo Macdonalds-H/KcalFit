@@ -1,0 +1,159 @@
+body {
+  font-family: 'Noto Sans KR', sans-serif; 
+  margin: 0;
+  padding: 0;
+  background-color: #f5f5f5;
+}
+/* body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 20px;
+} */
+
+.notification-list {
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.notification-item {
+  border-bottom: 1px solid #ddd;
+  padding: 15px 0;
+}
+
+.notification-item:last-child {
+  border-bottom: none;
+}
+
+.notification-title {
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.notification-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.notification-times {
+  list-style: none;
+  padding-left: 0;
+  margin: 10px 0;
+  display: flex;
+  gap: 10px;
+}
+
+.notification-times li {
+  background-color: #f0f8ff;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  color: #333;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.notification-header {
+  color: #007BFF;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 20px auto;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+h1, h2 {
+  color: #333;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+h1 {
+  font-size: 24px;
+}
+
+h2 {
+  font-size: 18px;
+  color: #555;
+}
+
+label {
+  font-size: 16px;
+  margin-bottom: 5px;
+  display: block;
+  color: #444;
+}
+
+input[type="number"], input[type="time"] {
+  font-size: 16px;
+  padding: 8px;
+  margin: 5px 0;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+input[type="number"] {
+  max-width: 80px;
+}
+
+.time-inputs {
+  margin-top: 10px;
+}
+
+.inputs-container {
+  display: flex;
+  align-items: center;
+}
+
+.inputs-container span {
+  margin-left: 5px;
+  font-size: 16px;
+}
+
+button {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  background-color: #28a745;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 15px;
+}
+
+button:hover {
+  background-color: #218838;
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.section {
+  margin-bottom: 20px;
+}
+
+.time-input-wrapper {
+  margin-bottom: 10px;
+}
+
+.alert {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 14px;
+  color: #d9534f;
+}

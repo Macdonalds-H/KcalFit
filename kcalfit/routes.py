@@ -75,10 +75,68 @@ def setup_routes(app):
         with open('templates/exercise.html', 'r', encoding='utf-8') as file:
             return file.read()
 
-    @app.route('/alarm')
+    @app.route('/alarm', methods=['GET', 'POST'])
     def alarm():
-        with open('templates/alarm.html', 'r', encoding='utf-8') as file:
-            return file.read()
+        user_id = session.get('user_id')  # 로그인된 사용자 ID를 세션에서 가져옴
+
+        if request.method == 'POST':
+            diet_reminder_count = request.form['meal-frequency']
+            diet_reminder_times = ','.join([request.form[f'meal-time-{i}'] for i in range(1, int(diet_reminder_count) + 1) if request.form[f'meal-time-{i}']])
+            water_reminder_count = request.form['water-frequency']
+            water_reminder_times = ','.join([request.form[f'water-time-{i}'] for i in range(1, int(water_reminder_count) + 1) if request.form[f'water-time-{i}']])
+
+            # 데이터베이스 연결
+            connection = get_db_connection()
+            cursor = connection.cursor()
+
+            # 사용자 알림 설정이 이미 존재하는지 확인
+            cursor.execute("SELECT COUNT(*) FROM notifications WHERE user_id = %s", (user_id,))
+            notification_exists = cursor.fetchone()[0] > 0
+
+            if notification_exists:
+                # 기존 데이터가 있으면 업데이트
+                query = """
+                    UPDATE notifications
+                    SET diet_reminder_count = %s, diet_reminder_times = %s, water_reminder_count = %s, water_reminder_times = %s
+                    WHERE user_id = %s
+                """
+                cursor.execute(query, (diet_reminder_count, diet_reminder_times, water_reminder_count, water_reminder_times, user_id))
+            else:
+                # 데이터가 없으면 새로운 데이터 삽입
+                query = """
+                    INSERT INTO notifications (user_id, diet_reminder_count, diet_reminder_times, water_reminder_count, water_reminder_times)
+                    VALUES (%s, %s, %s, %s, %s)
+                """
+                cursor.execute(query, (user_id, diet_reminder_count, diet_reminder_times, water_reminder_count, water_reminder_times))
+
+            # 변경 사항 저장
+            connection.commit()
+            cursor.close()
+            connection.close()
+
+        # GET 요청 시 저장된 알림 가져오기
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        cursor.execute("SELECT diet_reminder_count, diet_reminder_times, water_reminder_count, water_reminder_times FROM notifications WHERE user_id = %s", (user_id,))
+        notifications = cursor.fetchall()
+        cursor.close()
+        connection.close()
+        print(notifications)
+
+        # 알림 정보 구조화
+        reminders = []
+        for notification in notifications:
+            reminders.append({
+                'diet_count': notification[0],
+                'diet_times': notification[1].split(',') if notification[1] else [],
+                'water_count': notification[2],
+                'water_times': notification[3].split(',') if notification[3] else []
+            })
+
+        return render_template('alarm.html', reminders=reminders)
+
+        
+    
 
     @app.route('/mypage')
     def mypage():

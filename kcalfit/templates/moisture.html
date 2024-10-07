@@ -26,16 +26,19 @@
         <!-- 수분 섭취 진행 바 -->
         <div class="intake-progress-container">
             <div class="intake-progress">
-                <div class = "progress-header">
-                    <span>일일 수분 섭취량</span>
-                    <span class="goal">목표: {{ target_intake }}ml </span>
+                <div class="progress-header">
+                    <span> 일일 수분 섭취량 </span>
+                    <span class="goal"> 목표: <span id="api_goal"></span></span><button onclick="get_moisture_goal()">목표 불러오기</button>
                 </div>
-                <div class="progress-bar">
-                    <div class="progress">{{ current_intake }} ml</div>
+        
+                <!-- 수분 섭취량에 따라 진행 바가 변동 -->
+                <progress value="{{ current_intake }}" max="{{ target_intake }}" class="progress-bar"></progress>
+                <div class="progress-text">
+                    {{ current_intake }} ml / {{ target_intake }} ml
                 </div>
             </div>
         </div>
-
+        
         <!-- 섭취량 입력 폼 -->
         <div class="intake-input-container">
             <form action="/save_moisture" method="post">
@@ -82,5 +85,28 @@
             </table>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+    function get_moisture_goal(){
+        axios.post('/get_moisture_goal')
+        .then(function(response) {
+            console.log(response)
+            const goal = document.getElementById("api_goal");
+            const rp = response.data.moisture_goal;
+            goal.innerHTML = rp;
+        })
+        .catch(function(error) {
+            console.error(error);
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('diet-plan').innerHTML = 'Failed to load diet plan.';
+        });
+    }
+    </script>
+    
+
 </body>
+
+
+
 </html>

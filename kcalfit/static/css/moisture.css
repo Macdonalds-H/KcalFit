@@ -6,76 +6,107 @@ body {
 .intake-input-container {
   margin: 20px 0;
   padding: 20px;
-  background-color: #003f66;
+  background-color: #201E43;
   border-radius: 15px;
   color: white;
-  max-width: 400px;
+  max-width: 500px;
 }
 
 .intake-progress {
-  text-align: center;
+  text-align: left;  /*달력: 섭취량 글자 위치*/
+
 }
 
 .progress-header {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 10px;
+  margin-bottom: 70px;
 }
 
 .progress-bar {
   background-color: #e0e0e0;
   border-radius: 5px;
-  height: 25px;
+  height: 50px;
   width: 100%;
   overflow: hidden;
 }
 
 .progress {
   height: 100%;
-  background-color: #4caf50;
-  text-align: center;
-  color: white;
+  background-color: #508C9B;
   line-height: 25px;
   transition: width 0.5s ease;
 }
 
-.intake-input-container {
+.intake-input-container {  /* 수분섭취량 위치*/
   text-align: center;
 }
 
-.intake-input-container input {
+.intake-input-container input {  /*섭취량 입력 */
   padding: 10px;
   margin-right: 10px;
   border-radius: 5px;
   border: 1px solid #ccc;
-  width: 150px;
+  width: 200px;
 }
 
 .intake-input-container button {
   padding: 10px 20px;
-  background-color: #4caf50;
+  background-color: #508C9B;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
 }
 
-.intake-input-container button:hover {
-  background-color: #45a049;
-}
 
 .calendar-container {
   margin-top: 20px;
   text-align: center;
+  overflow: hidden;
 }
 
 .calendar-container table {
   width: 100%;
+  height: 100%;
   border-collapse: collapse;
 }
 
 .calendar-container th, .calendar-container td {
+  width: calc(100% / 7); 
+  height: calc(100% / 6);
   padding: 10px;
-  text-align: center;
+  text-align: left;
   border: 1px solid #ccc;
+}
+
+/* progress 태그 스타일 */
+progress {
+  width: 100%;
+  height: 25px;
+  border-radius: 5px;
+  appearance: none; /* 브라우저 기본 스타일 제거 */
+}
+
+progress::-webkit-progress-bar {
+  background-color: #e0e0e0;
+  border-radius: 5px;
+}
+
+progress::-webkit-progress-value {
+  background-color: #508C9B;
+  border-radius: 5px;
+}
+
+progress::-moz-progress-bar {
+  background-color: #508C9B;
+  border-radius: 5px;
+}
+
+/* 텍스트 스타일 */
+.progress-text {
+  text-align: left;
+  margin-top: 10px;
+  font-size: 14px;
+  color: #e0e0e0;
 }

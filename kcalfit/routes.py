@@ -279,6 +279,77 @@ def setup_routes(app):
         with open('templates/exercise.html', 'r', encoding='utf-8') as file:
             return file.read()
 
+    @app.route('/get_exercise_data', methods=['GET'])
+    def get_exercise_data():
+        user_id = session.get('user_id')
+
+        if not user_id:
+            return jsonify({'error': '로그인이 필요합니다.'}), 401
+
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        # Fetch user's exercise records (e.g., date, intensity, time fields)
+        cursor.execute("""
+            SELECT date, intensity, duration
+            FROM exercise
+            WHERE user_id = %s
+        """, (user_id,))
+
+        exercise_data = cursor.fetchall()
+
+        # Convert any timedelta objects in the data to string format (HH:MM:SS)
+        for entry in exercise_data:
+            if isinstance(entry['duration'], timedelta):
+                entry['duration'] = str(entry['duration'])
+
+        cursor.close()
+        conn.close()
+
+        return jsonify(exercise_data)
+
+    @app.route('/save_exercise', methods=['POST'])
+    def save_exercise():
+        user_id = session.get('user_id')
+        selected_date = request.form.get('selected_date')
+        intensity = request.form.get('intensity')
+        hours = request.form.get('hours')
+        minutes = request.form.get('minutes')
+
+        if not user_id:
+            return jsonify({'error': '로그인이 필요합니다.'}), 401
+
+        # English intensity to Korean mapping
+        intensity_map = {
+            "low": "저강도",
+            "medium": "중강도",
+            "high": "고강도"
+        }
+        mapped_intensity = intensity_map.get(intensity)
+
+        # Convert hours and minutes to TIME format for MySQL
+        duration = f"{int(hours):02}:{int(minutes):02}:00"
+
+        # Set target_duration and duration_difference (example values)
+        target_duration = "01:00:00"
+        duration_difference = f"{abs(int(hours) - 1):02}:{minutes}:00"
+
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            INSERT INTO exercise (user_id, date, intensity, duration, exercise_type, target_duration, duration_difference)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """, (user_id, selected_date, mapped_intensity, duration, '유산소', target_duration, duration_difference))
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        return redirect('/exercise')
+
+
+
     @app.route('/alarm', methods=['GET', 'POST'])
     def alarm():
         user_id = session.get('user_id')  # 로그인된 사용자 ID를 세션에서 가져옴
@@ -391,31 +462,5 @@ def setup_routes(app):
 
         return render_template('login.html')
     
-
-
-
-    # dayExer 추가사항
-    # 추가되는 코드 (print 포함)
-
-# Exercise 페이지에서 사용자 운동 기록을 DB에서 가져오기
-    # @app.route('/save.exercise', methods = ['POST'])
-    # def save_exercise():
-    # # 세션에서 사용자 ID 확인
-    #     user_id = session.get['user_id']
-    
-    # # DB에서 운동 기록 가져오기
-    # conn = get_db_connection()
-    # cursor = conn.cursor(dictionary=True)
-    # cursor.execute("SELECT * FROM Workouts WHERE user_id = %s", (user_id,))
-    # workouts = cursor.fetchall()
-    
-    # # 터미널에서 운동 기록 확인
-    # print(f"사용자 ID: {user_id}의 운동 기록:", workouts)
-    
-    # return render_template('exercise.html', workouts=workouts)
-
-
-
-
 
 

@@ -22,7 +22,27 @@
         </ul>
     </div>
     <div id="container">
-
+        <div>
+            <h2>현재 측정 상태</h2>
+            <form action="/mypage" method="POST">
+            <div>
+                <div>
+                    <img src="static/img/body.png" alt="몸">
+                </div>
+                <div>
+                    <p>키 : <input type="text" name="height" value="{{ body_info['height'] }}">cm</p>
+                    <p>인바디 정보</p>
+                    <div>
+                        체지방률(%) : <input type="text" name="body_fat_percentage" value="{{ body_info['body_fat_percentage'] }}">
+                        골격근량(kg) : <input type="text" name="skeletal_muscle_mass" value="{{ body_info['skeletal_muscle_mass'] }}">
+                        기초대사량(kcal) : <input type="text" name="basal_metabolic_rate" value="{{ body_info['basal_metabolic_rate'] }}">
+                    </div>
+                </div>
+            </div>
+            <p>몸무게 : <input type="text" name="weight" value="{{ body_info['weight'] }}">Kg</p>
+            <button type="submit">저장하기</button>
+            </form>
+        </div>
     </div>
 </body>
 </html>

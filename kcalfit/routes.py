@@ -18,7 +18,8 @@ def setup_routes(app):
             return file.read()
         
     @app.route('/data')
-    def data():ㄷㄴ 
+    def data():
+        result = get_data_from_db()
         print(result)
         return jsonify(result)  # result는 JSON으로 변환 가능한 딕셔너리
     
@@ -29,8 +30,8 @@ def setup_routes(app):
         cursor = conn.cursor(dictionary=True)
         cursor.execute("SELECT * FROM body_info WHERE user_id = %s", (user_id,))
         body_info = cursor.fetchone()
-        with open('templates/diet.html', 'r', encoding='utf-8', body_info=body_info) as file:
-            return file.read()
+        print(body_info)
+        return render_template('diet.html', body_info=body_info)
         
     @app.route('/get_diet', methods=['POST'])
     def get_diet():
@@ -41,9 +42,6 @@ def setup_routes(app):
         cursor = conn.cursor(dictionary=True)
         cursor.execute("SELECT * FROM body_info WHERE user_id = %s", (user_id,))
         body_info = cursor.fetchone()
-        print("aaa")
-        print(user_id)
-        print(body_info)
         
         if not body_info:
             return jsonify({"error": "Body information not found"}), 404
@@ -64,6 +62,75 @@ def setup_routes(app):
         diet_plan = response['choices'][0]['message']['content']  # 응답에서 내용 추출
     
         return jsonify({"diet_plan": diet_plan})
+    
+    @app.route('/diet_write')
+    def diet_write():
+        with open('templates/diet_write.html', 'r', encoding='utf-8') as file:
+            return file.read()
+    
+    from collections import defaultdict
+
+    # DB에서 로그인된 사용자에 해당하는 날짜별 식단 데이터를 가져오는 라우트 (달력에 표시)
+    @app.route('/get_diet_data')
+    def get_diet_data():
+        # 로그인된 사용자의 ID 가져오기
+        user_id = session.get('user_id')
+        
+        if not user_id:
+            return jsonify({"error": "사용자가 로그인되지 않았습니다."}), 401
+
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        # 해당 사용자와 월(10월)의 모든 데이터를 가져오는 쿼리
+        cursor.execute("""
+            SELECT date, meal_type, meal_content 
+            FROM diet 
+            WHERE user_id = %s AND MONTH(date) = 10 AND YEAR(date) = 2024
+        """, (user_id,))
+        diet_data = cursor.fetchall()
+
+        cursor.close()
+        conn.close()
+
+        # 데이터를 날짜별로 묶음
+        diet_by_date = defaultdict(dict)
+        for row in diet_data:
+            date = str(row['date'])
+            meal_type = row['meal_type']
+            meal_content = row['meal_content']
+            diet_by_date[date][meal_type] = meal_content
+
+        return jsonify(diet_by_date)
+        
+    # 식단 정보를 저장하거나 업데이트하는 라우트
+    @app.route('/save_diet', methods=['POST'])
+    def save_diet():
+        user_id = session.get('user_id')
+        date = request.form['date']
+        meal_type = request.form['meal_type']
+        meal_content = request.form['meal_content']
+
+        connection = get_db_connection()
+        cursor = connection.cursor()
+
+        # 해당 날짜와 식사 타입에 이미 데이터가 있는지 확인
+        cursor.execute("SELECT id FROM diet WHERE user_id = %s AND date = %s AND meal_type = %s", (user_id, date, meal_type))
+        existing_diet = cursor.fetchone()
+
+        if existing_diet:
+            # 기존 데이터가 있으면 업데이트
+            cursor.execute("UPDATE diet SET meal_content = %s WHERE id = %s", (meal_content, existing_diet[0]))
+        else:
+            # 새로운 데이터 삽입
+            cursor.execute("INSERT INTO diet (user_id, date, meal_type, meal_content) VALUES (%s, %s, %s, %s)",
+                        (user_id, date, meal_type, meal_content))
+
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+        return redirect('/diet_write')
 
 
 
@@ -177,18 +244,6 @@ def setup_routes(app):
         flash('섭취량이 저장되었습니다.', 'success')
         return redirect('/moisture')
 
-    
-    
-
-     
-
-
-
-
-
-
-
-
 
     @app.route('/exercise')
     def exercise():
@@ -200,10 +255,33 @@ def setup_routes(app):
         with open('templates/alarm.html', 'r', encoding='utf-8') as file:
             return file.read()
 
-    @app.route('/mypage')
+    @app.route('/mypage', methods=['GET', 'POST'])
     def mypage():
-        with open('templates/mypage.html', 'r', encoding='utf-8') as file:
-            return file.read()                
+        if request.method == 'GET':
+            user_id = session.get('user_id')
+            conn = get_db_connection()
+            cursor = conn.cursor(dictionary=True)
+            cursor.execute("SELECT * FROM body_info WHERE user_id = %s", (user_id,))
+            body_info = cursor.fetchone()
+            return render_template('mypage.html', body_info=body_info)    
+        if request.method == 'POST':
+            height = request.form['height']        
+            weight = request.form['weight']        
+            body_fat_percentage = request.form['body_fat_percentage']        
+            skeletal_muscle_mass = request.form['skeletal_muscle_mass']        
+            basal_metabolic_rate = request.form['basal_metabolic_rate']    
+
+            user_id = session.get('user_id')
+            conn = get_db_connection()
+            cursor = conn.cursor(dictionary=True) 
+            update_query = """
+                UPDATE body_info 
+                SET height = %s, weight = %s, body_fat_percentage = %s, skeletal_muscle_mass = %s, basal_metabolic_rate = %s
+                WHERE user_id = %s
+            """
+            cursor.execute(update_query, (height, weight, body_fat_percentage, skeletal_muscle_mass, basal_metabolic_rate, user_id))   
+            conn.commit()
+            return redirect('/mypage')           
         
     # 로그인 라우트
     @app.route('/login', methods=['GET', 'POST'])

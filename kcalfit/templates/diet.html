@@ -6,7 +6,17 @@
     <title></title>
     <link rel="stylesheet" href="static/css/main.css">
     <style>
-        
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #diet-plan {
+            margin-top: 20px;
+            font-size: 18px;
+        }
     </style>
 </head>
 <body>
@@ -22,7 +32,157 @@
         </ul>
     </div>
     <div id="container">
+        <a href="/diet_write">식단 작성</a><hr>
+        <div>
+            <h2>현재 측정 상태</h2>
+            <div>
+                <div>
+                    <img src="static/img/body.png" alt="몸">
+                </div>
+                <div>
+                    <p>키 : {{ body_info['height'] }}cm</p>
+                    <p>인바디 정보</p>
+                    <div>
+                        체지방률(%) : {{ body_info['body_fat_percentage'] }}
+                        골격근량(kg) : {{ body_info['skeletal_muscle_mass'] }}
+                        기초대사량(kcal) : {{ body_info['basal_metabolic_rate'] }}
+                    </div>
+                </div>
+            </div>
+            <p>몸무게 : {{ body_info['weight'] }}Kg</p>
+            <button id="day-btn">Get One Day Diet Plan</button>
+            <button id="week-btn">Get One Week Diet Plan</button>
+        </div>
+        <div>
+            <div id="loading" style="display: none;">Loading diet plan...</div>
+            <div id="diet-plan"></div>
+        </div>
 
+    
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script>
+            document.getElementById('day-btn').addEventListener('click', function() {
+                getDietPlan('day');
+            });
+
+            document.getElementById('week-btn').addEventListener('click', function() {
+                getDietPlan('week');
+            });
+
+            function getDietPlan(diet_type) {
+                document.getElementById('loading').style.display = 'block';
+                document.getElementById('diet-plan').innerHTML = '';
+                
+                if(diet_type == "day"){
+                    const rp = `
+                    아침: 쌀밥 1공기, 김치찌개, 계란후라이, 고구마 
+                    점심: 된장찌개, 계란말이, 김밥, 부추전, 겉절이 
+                    저녁: 소고기 불고기, 된장찌개, 샐러드, 김치 
+                    간식: 과일, 미니 샌드위치, 두유 
+                    식사 후에는 충분한 수분을 섭취하고, 운동을 통해 건강한 체중 유지와 체지방 감소를 도와주실 것을 권장합니다.
+                    `;
+                    const mealMatches = rp.match(/(아침|점심|저녁|간식):\s?([^\n]+)/g);
+                    const explanation = rp.split(/간식:\s?[^\n]+/)[1].trim();
+
+                    let htmlResponse = "";
+
+                    mealMatches.forEach(meal => {
+                    const [mealType, mealItems] = meal.split(':');
+                    htmlResponse += `<p><strong>${mealType}:</strong> ${mealItems.trim()}</p>\n`;
+                    });
+
+                    htmlResponse += `<p>${explanation}</p>`;
+
+
+                    document.getElementById("diet-plan").innerHTML = htmlResponse;
+
+                    console.log(htmlResponse);
+                }else{
+                    const rp = "주의사항: 개인의 건강 상태와 식이 요구량에 따라 다른 식단이 필요할 수 있습니다. 추천하는 식단은 일반적인 참고용으로 사용해주세요. 월요일: - 아침: 샌드위치 (호두, 닭가슴살, 야채), 요거트 - 점심: 불고기 비빔밥, 김치, 된장국 - 저녁: 꽁치구이, 고구마, 쌈 부차 화요일: - 아침: 오믈렛, 토마토 주스 - 점심: 두부전, 김밥, 미역국 - 저녁: 갈비찜, 콩나물무침, 상추겉절이 수요일: - 아침: 시리얼과 우유, 바나나 - 점심: 된장찌개, 고등어 조림, 도토리묵 - 저녁: 삼겹살구이, 부추전, 오이무침 목요일: - 아침: 요거트 스무디, 견과류 - 점심: 불고기 부대찌개, 깻잎볶음, 떡볶이 - 저녁: 오징어볶음, 봉어묵조림, 부추겉절이 금요일: - 아침: 닭가슴살 샐러드, 닭곰탕 - 점심: 잡채, 계란국, 애호박볶음 - 저녁: 돼지고기 김치찌개, 콩나물무침, 동태전 토요일: - 아침: 팬케이크, 오렌지주스 - 점심: 떡갈비, 비빔냉면, 미역국 - 저녁: 쭈꾸미볶음, 홍어채무침, 김밥 일요일: - 아침: 굴죽, 달걀찜 - 점심: 소고기 무국, 갈치양념구이, 꽃맛살샐러드 - 저녁: 된장찜닭, 감자조림, 오이냉국 이 식단은 종합적인 영양소를 고려하여 한국 요리를 중심으로 구성되었습니다. 식단을 조절하거나 특별한 식이요구량이 있을 경우 전문가와 상의하시는 것이 좋습니다."
+                    // 요일을 구분하는 정규 표현식 수정
+                    const days = rp.split(/(?=월요일|화요일|수요일|목요일|금요일|토요일|일요일)/);
+
+                    // HTML 생성
+                    let htmlResponse = '';
+
+                    days.forEach(day => {
+                        const firstColonIndex = day.indexOf(':');
+                        const dayName = day.slice(0, firstColonIndex).trim();
+                        const meals = day.slice(firstColonIndex + 1).trim();
+                        if (meals) {
+                            // 아침, 점심, 저녁을 유연하게 매칭하는 정규 표현식
+                            const mealMatches = meals.match(/- 아침:.*?(?=- 점심:|- 저녁:|$)|- 점심:.*?(?=- 저녁:|$)|- 저녁:\s?([^\n]*)/g);
+                           
+                            if (mealMatches) {
+                                let breakfast = mealMatches[0];
+                                let lunch = mealMatches[1];
+                                let dinner = mealMatches[2];
+
+                                htmlResponse += `<div class="day-box">\n<h3>${dayName.trim()}</h3>\n`;
+                                htmlResponse += `<p><strong>아침:</strong> ${breakfast ? breakfast.split(':')[1].trim() : '없음'}</p>\n`;
+                                htmlResponse += `<p><strong>점심:</strong> ${lunch ? lunch.split(':')[1].trim() : '없음'}</p>\n`;
+                                htmlResponse += `<p><strong>저녁:</strong> ${dinner ? dinner.split(':')[1].trim() : '없음'}</p>\n`;
+                                htmlResponse += `</div>\n`;
+                            }
+                        }
+                    });
+                    document.getElementById("diet-plan").innerHTML = htmlResponse;
+
+                    console.log(htmlResponse);
+                }
+                // axios.post('/get_diet', {
+                //     diet_type: diet_type
+                // })
+                // .then(function(response) {
+                //     document.getElementById('loading').style.display = 'none';
+                //     document.getElementById('diet-plan').innerHTML = response.data.diet_plan;
+                //     const rp = response.data.diet_plan;
+                //     if(diet_type == "day"){
+                //         const mealMatches = rp.match(/(아침|점심|저녁|간식):\s?([^\n]+)/g);
+                //         const explanation = rp.split(/간식:\s?[^\n]+/)[1].trim();
+
+                //         let htmlResponse = "";
+
+                //         mealMatches.forEach(meal => {
+                //         const [mealType, mealItems] = meal.split(':');
+                //         htmlResponse += `<p><strong>${mealType}:</strong> ${mealItems.trim()}</p>\n`;
+                //         });
+
+                //         htmlResponse += `<p>${explanation}</p>`;
+
+
+                //         document.getElementById("diet-plan").innerHTML = htmlResponse;
+
+                //         console.log(htmlResponse);
+                //     }else{
+                //         const days = rp.match(/(월요일|화요일|수요일|목요일|금요일|토요일|일요일):\s?([^]*)/g);
+
+                //         let htmlResponse = "";
+
+                //         days.forEach(day => {
+                //         const [dayName, meals] = day.split(":");
+                //         const [breakfast, lunch, dinner] = meals.match(/- 아침: [^\n]+|- 점심: [^\n]+|- 저녁: [^\n]+/g);
+                        
+                //         htmlResponse += `<div class="day-box">\n<h3>${dayName}</h3>\n`; // 요일 제목
+                //         htmlResponse += `<p><strong>아침:</strong> ${breakfast.split(":")[1].trim()}</p>\n`;
+                //         htmlResponse += `<p><strong>점심:</strong> ${lunch.split(":")[1].trim()}</p>\n`;
+                //         htmlResponse += `<p><strong>저녁:</strong> ${dinner.split(":")[1].trim()}</p>\n`;
+                //         htmlResponse += `</div>\n`; 
+                //         });
+
+                //         document.getElementById("diet-plan").innerHTML = htmlResponse;
+
+                //         console.log(htmlResponse);
+                //     }
+                // })
+                // .catch(function(error) {
+                //     console.error(error);
+                //     document.getElementById('loading').style.display = 'none';
+                //     document.getElementById('diet-plan').innerHTML = 'Failed to load diet plan.';
+                // });
+            }
+
+        </script>
     </div>
 </body>
 </html>

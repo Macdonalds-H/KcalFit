@@ -1,13 +1,7 @@
-.container {
-  width: 100%;
-  max-width: 1200px; 
-  border-radius: 10px;
-  padding: 20px;
-}
-
-.header h1 {
+#container h1{
+  padding: 10px 0px;
   text-align: center;
-  margin-bottom: 20px;
+  font-size: 30px;
 }
 
 .main-content {
@@ -15,6 +9,7 @@
   justify-content: space-between;
 }
 
+/* 캘린더 */
 .calendar {
   width: 50%;
   padding-right: 20px;
@@ -35,6 +30,32 @@
 .calendar td {
   height: 100px;
   text-align: left;
+  position: relative; /*숫자 고정을 위해 추가*/
+}
+
+.calendar td span {
+  position: absolute; /* 숫자를 고정 */
+  top: 10px;          /* 위에서부터 10px 위치 */
+  left: 10px;         /* 왼쪽에서부터 10px 위치 */
+  font-weight: bold;  /* 숫자를 굵게 */
+}
+
+/* 기본 workout-entry 스타일 */
+.workout-entry {
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+.저강도-intensity {
+  color: blue;
+}
+
+.중강도-intensity {
+  color: green;
+}
+
+.고강도-intensity {
+  color: red;
 }
 
 .settings {
@@ -46,7 +67,7 @@ label {
   font-size: 20px;
   color: #333;
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 24px;
   text-align: center;
 }
 
@@ -67,16 +88,6 @@ input {
   border-radius: 5px;
   margin-bottom: 15px;
 }
-.low-intensity {
-  background-color: lightgreen;
-}
-.medium-intensity {
-  background-color: yellow;
-}
-.high-intensity {
-  background-color: red;
-}
-
 
 .save-btn {
   margin-top: 20px;
@@ -95,80 +106,4 @@ input {
   background-color: #000000;
 }
 
-.footer {
-  margin-top: 30px;
-}
 
-.footer table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
-  margin-top: 20px;
-}
-
-.footer th, .footer td {
-  padding: 10px;
-  text-align: center;
-  border: 1px solid #ccc;
-  font-size: 14px;
-}
-
-
-/* 기본 workout-entry 스타일 */
-.workout-entry {
-  font-size: 12px;
-  margin-top: 5px;
-}
-
-/* 저강도 - 파란색 */
-.low-intensity {
-  color: blue; /* 파란색 */
-}
-
-/* 중강도 - 주황색 */
-.medium-intensity {
-  color: orange; /* 주황색으로 수정 */
-}
-
-/* 고강도 - 빨간색 */
-.high-intensity {
-  color: red; /* 빨간색 */
-}
-
-.selected-date {
-  background-color: #d1ffd1;
-}
-
-
-/* 홈버튼 추가 */
-/* *,body{
-  margin: 0;
-  padding: 0;
-} */
-a{
-  text-decoration: none;
-  color: black;
-}
-/* #header{
-  /* margin: 0 auto; */
-  /* padding-top: 20px; */
-  /* width: 80%; */
-  /* height: 100px; */
-
-/* #header #logo{
-  float: left;
-  width: 100px;
-} */
-
-/* .onlink{
-  border-bottom: 1px solid black;
-} */
-/* #container{
-  margin: 0 auto;
-  width: 80%;
-} */
-/* #container h1{
-  padding: 100px 0px;
-  text-align: center;
-  font-size: 60px;
-} */

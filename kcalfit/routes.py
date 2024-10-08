@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, session, flash
 from flask import jsonify
 from datetime import date, timedelta
 import calendar
+import re
 from db import get_data_from_db, get_user_by_credentials, get_db_connection
 import openai  # ChatGPT API 사용
 
@@ -48,20 +49,61 @@ def setup_routes(app):
         
         # ChatGPT API 요청 준비 (한국어 요청 + 한국 음식 포함)
         diet_type = request.json.get('diet_type')  # 'day' 또는 'week'
-        prompt = f"제 키는 {body_info['height']}cm, 몸무게는 {body_info['weight']}kg, 체지방률은 {body_info['body_fat_percentage']}%, 골격근량은 {body_info['skeletal_muscle_mass']}kg, 기초대사량은 {body_info['basal_metabolic_rate']}kcal입니다. 한국 요리를 포함한 {diet_type} 다이어트식단을 추천해주세요."
 
+        if diet_type == "하루":
+            prompt = f"""
+                제 키는 {body_info['height']}cm, 몸무게는 {body_info['weight']}kg, 체지방률은 {body_info['body_fat_percentage']}%, 
+                골격근량은 {body_info['skeletal_muscle_mass']}kg, 기초대사량은 {body_info['basal_metabolic_rate']}kcal입니다. 
+                한국 요리를 포함한 {diet_type} 다이어트식단을 추천해주세요.
+                아래 형식을 반드시 지켜서 응답해주세요.
+
+                1. 하루식단을 요청했을 때 하루 식단은 아침/점심/저녁 한 세트만 보냄
+                2. 설명이 있다면, 식단 아래에 설명을 추가
+
+                응답 예시:
+                아침: 밥, 된장국
+                점심: 샐러드, 닭가슴살
+                저녁: 고구마, 두부
+                """
+        else:
+            prompt = f"""
+                제 키는 {body_info['height']}cm, 몸무게는 {body_info['weight']}kg, 체지방률은 {body_info['body_fat_percentage']}%, 
+                골격근량은 {body_info['skeletal_muscle_mass']}kg, 기초대사량은 {body_info['basal_metabolic_rate']}kcal입니다. 
+                한국 요리를 포함한 {diet_type} 다이어트식단을 추천해주세요.
+                아래 형식을 반드시 지켜서 응답해주세요.
+                
+                1. 요일별로 아침, 점심, 저녁으로 구분된 식단
+                2. 아침/점심/저녁 식단이 없는 경우 '없음'이라고 명시
+                3. 각 요일은 '월요일', '화요일', '수요일' 형식으로 시작
+                4. 요일별 설명이 있다면, 식단 아래에 설명을 추가
+                5. 일주일 식단은 월요일~일요일까지의 아침/점심/저녁 세트를 보냄
+                
+
+                응답 예시:
+                월요일
+                - 아침: 밥, 된장국
+                - 점심: 샐러드, 닭가슴살
+                - 저녁: 고구마, 두부
+
+                화요일
+                - 아침: 없음
+                - 점심: 김밥
+                - 저녁: 생선구이, 밥
+                """
         # ChatGPT API 요청
         openai.api_key = ""
         response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",  # 사용할 모델을 명시합니다.
-        messages=[
-            {"role": "user", "content": prompt}
-        ]
+            model="gpt-3.5-turbo",  # 사용할 모델을 명시합니다.
+            messages=[
+                {"role": "user", "content": prompt}
+            ]
         )
 
         diet_plan = response['choices'][0]['message']['content']  # 응답에서 내용 추출
+        print(diet_plan)
     
         return jsonify({"diet_plan": diet_plan})
+
     
     @app.route('/diet_write')
     def diet_write():

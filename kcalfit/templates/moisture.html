@@ -33,7 +33,7 @@
                 <!-- 수분 섭취량에 따라 진행 바가 변동 -->
                 <progress value="{{ current_intake }}" max="{{ target_intake }}" class="progress-bar"></progress>
                 <div class="progress-text">
-                    {{ current_intake }} ml / {{ target_intake }} ml
+                    {{ current_intake }} ml / <span id="api_goal2"></span>
                 </div>
             </div>
         </div>
@@ -93,8 +93,10 @@
         .then(function(response) {
             console.log(response)
             const goal = document.getElementById("api_goal");
+            const goal2 = document.getElementById("api_goal2");
             const rp = response.data.moisture_goal;
             goal.innerHTML = rp;
+            goal2.innerHTML = rp;
         })
         .catch(function(error) {
             console.error(error);

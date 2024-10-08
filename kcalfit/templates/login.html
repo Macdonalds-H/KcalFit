@@ -3,8 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>칼로리핏 로그인</title>
     <link rel="stylesheet" href="static/css/main.css">
+    <style>
+        *{
+            box-sizing: border-box;
+        }
+        #login-wrapper {
+            margin-top: 20px;
+        }
+
+        form{
+            margin: 0 auto;
+            width: 500px;
+        }
+
+        input[type="text"], 
+        input[type="password"] {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            background-color: #f9f9f9;
+        }
+
+        input[type="text"]::placeholder,
+        input[type="password"]::placeholder {
+            color: #bbb;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 28px;
+            }
+
+            input[type="text"], 
+            input[type="password"], 
+            button {
+                padding: 12px;
+                font-size: 16px;
+            }
+        }
+    </style>
 </head>
 <body>
     <div id="container">
@@ -12,18 +71,9 @@
         <div id="login-wrapper">
             <form action="/login" method="POST">
                 <input type="text" placeholder="ID" name="username" required>
-                <input type="text" placeholder="PW" name="password" required>
+                <input type="password" placeholder="PW" name="password" required>
                 <button type="submit">Login</button>
             </form>
-            {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <ul>
-                {% for message in messages %}
-                <li>{{ message }}</li>
-                {% endfor %}
-                </ul>
-            {% endif %}
-            {% endwith %}
         </div>
     </div>
 </body>

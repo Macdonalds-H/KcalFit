@@ -19,70 +19,71 @@
             <a href="/mypage"><li>마이페이지</li></a>
         </ul>
     </div>
-    <div id="containe">
-    
-
-        <!-- 수분 섭취 진행 바 -->
-        <div class="intake-progress-container">
-            <div class="intake-progress">
-                <div class="progress-header">
-                    <span> 일일 수분 섭취량 </span>
-                    <span class="goal"> 목표: <span id="api_goal"></span></span><button onclick="get_moisture_goal()">목표 불러오기</button>
-                </div>
-        
-                <!-- 수분 섭취량에 따라 진행 바가 변동 -->
-                <progress value="{{ current_intake }}" max="{{ target_intake }}" class="progress-bar"></progress>
-                <div class="progress-text">
-                    {{ current_intake }} ml / <span id="api_goal2"></span>
+    <div id="container">
+        <div style="padding-top: 120px;width: 40%;">
+            <!-- 수분 섭취 진행 바 -->
+            <div class="intake-progress-container">
+                <div class="intake-progress">
+                    <div class="progress-header">
+                        <span> 일일 수분 섭취량 </span>
+                        <span class="goal"> 목표: <span id="api_goal"></span></span><button onclick="get_moisture_goal()">목표 불러오기</button>
+                    </div>
+            
+                    <!-- 수분 섭취량에 따라 진행 바가 변동 -->
+                    <progress value="{{ current_intake }}" max="{{ target_intake }}" class="progress-bar"></progress>
+                    <div class="progress-text">
+                        {{ current_intake }} ml / <span id="api_goal2"></span>
+                    </div>
                 </div>
             </div>
+            
+            <!-- 섭취량 입력 폼 -->
+            <div class="intake-input-container">
+                <form action="/save_moisture" method="post">
+                    <label for="intake"> 섭취량 입력 (ml): </label>
+                    <input type="hidden" name="go_intake" value="30">
+                    <input type="number" id="intake" name="target_intake" min="0"  required>
+                    <button type="submit">저장</button>
+                </form>
+            </div>
         </div>
-        
-        <!-- 섭취량 입력 폼 -->
-        <div class="intake-input-container">
-            <form action="/save_moisture" method="post">
-                <label for="intake"> 섭취량 입력 (ml): </label>
-                <input type="hidden" name="go_intake" value="30">
-                <input type="number" id="intake" name="target_intake" min="0"  required>
-                <button type="submit">저장</button>
-            </form>
-        </div>
-
         <!-- 달력 -->
         <div class="calendar-container">
 
             <h2>{{ today.year }}년 {{ today.month }}월 달력</h2>
-            <table border="1">
-                <thead>
-                    <tr>
-                        <th>일</th>
-                        <th>월</th>
-                        <th>화</th>
-                        <th>수</th>
-                        <th>목</th>
-                        <th>금</th>
-                        <th>토</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for week in month_days %}
+            <div class="table-wrapper">
+                <table border="1">
+                    <thead>
                         <tr>
-                            {% for day in week %}
-                                {% if day == 0 %}
-                                    <td></td> <!-- 빈 칸 -->
-                                {% else %}
-                                    {% set date_str = today.replace(day=day).strftime('%Y-%m-%d') %}
-                                    {% set intake = hydration_data.get(date_str, 0) %}
-                                    <td>
-                                        <strong>{{ day }}</strong><br>
-                                        섭취량: {{ intake }}ml
-                                    </td>
-                                {% endif %}
-                            {% endfor %}
+                            <th>일</th>
+                            <th>월</th>
+                            <th>화</th>
+                            <th>수</th>
+                            <th>목</th>
+                            <th>금</th>
+                            <th>토</th>
                         </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {% for week in month_days %}
+                            <tr>
+                                {% for day in week %}
+                                    {% if day == 0 %}
+                                        <td></td> <!-- 빈 칸 -->
+                                    {% else %}
+                                        {% set date_str = today.replace(day=day).strftime('%Y-%m-%d') %}
+                                        {% set intake = hydration_data.get(date_str, 0) %}
+                                        <td>
+                                            <strong>{{ day }}</strong><br>
+                                            섭취량: {{ intake }}ml
+                                        </td>
+                                    {% endif %}
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 

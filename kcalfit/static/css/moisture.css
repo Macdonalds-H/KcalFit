@@ -2,10 +2,11 @@ body {
   font-family: Arial, sans-serif;
 }
 
+
 /* Container Styles */
 .intake-progress-container, .intake-input-container {
   position: relative;
-  left: 100px;
+  /* left: 100px; */
   margin: 20px;
   padding: 20px;
   font-size: 1.2rem;
@@ -16,19 +17,19 @@ body {
 }
 
 .intake-progress-container {
-  top: 200px;
+  /* top: 200px; */
   font-weight: bold; /* intake-progress-container에만 필요한 스타일 */
 }
 
 .intake-input-container {
-  top: 250px;
+  /* top: 250px; */
   text-align: center; /* intake-input-container 고유 스타일 */
 }
 
 /* Calendar Styles */
 .calendar-container {
   position: absolute;
-  top: 150px;
+  top: 120px;
   right: 100px;
   width: 50%;
   text-align: right;
@@ -47,6 +48,17 @@ body {
   border-collapse: separate;
   border-spacing: 10px;
   table-layout: fixed;
+  border: none;
+ 
+
+}
+.table-wrapper{
+  box-shadow: 0 1px 2px rgba(0,0,0,0.07), 
+  0 2px 4px rgba(0,0,0,0.07), 
+  0 4px 8px rgba(0,0,0,0.07), 
+  0 8px 16px rgba(0,0,0,0.07),
+  0 16px 32px rgba(0,0,0,0.07), 
+  0 32px 64px rgba(0,0,0,0.07);
 }
 
 .calendar-container th {
@@ -88,7 +100,9 @@ progress::-moz-progress-bar {
   background-color: #508C9B;
   border-radius: 5px;
 }
-
+::-webkit-progress-value {
+  background-color: rgb(0, 195, 255);
+}
 /* Text Styles */
 .progress-text, .intake-progress {
   text-align: left;
@@ -129,7 +143,7 @@ progress::-moz-progress-bar {
   margin-right: 5px;
   border-radius: 5px;
   border: 1px solid #ccc;
-  width: 200px;
+  width: 155px;
 }
 
 .intake-input-container button {

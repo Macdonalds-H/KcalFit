@@ -24,20 +24,8 @@ GRANT ALL PRIVILEGES ON my_flask_app.* TO 'user'@'localhost';
 FLUSH PRIVILEGES;
 
 USE my_flask_app;
-
-CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    userid VARCHAR(50) NOT NULL,
-    userpw VARCHAR(50) NOT NULL
-);
-
-INSERT INTO users (userid, userpw) VALUES ('user1', 'pw1');
-
-SELECT * FROM users;
-
 ```
-![image](https://github.com/user-attachments/assets/afe3bf64-cade-48ca-8f26-02ee0262e94f)
-이렇게 나온다면 성공
+sql.sql 파일 실행하기
 
 4. Flask 설치
 ```
